@@ -1,0 +1,48 @@
+import java.util.Scanner;
+import java.io.*;
+public class TreeNode{
+	TreeNode root;
+	private int key;
+	private TreeNode left;
+	private TreeNode right;
+	public TreeNode(int k){
+		key = k;
+		left = null;
+		right = null;
+	}
+	public void add(TreeNode leaf){
+		if(root==null){
+			root = leaf;
+		}
+		while()
+	}
+	public void setRight(TreeNode root,int key){
+		
+	}
+	public void freeTree(){
+		root = null;
+	}
+	public static void main(String[] args){
+		try {
+			Scanner read = new Scanner(new File("resource/Data.txt"));
+			int count = 0;
+			while(read.hasNext()){
+				String input =read.next();
+				System.out.println(input);
+				String numRecord = read.nextLine();
+				System.out.println(numRecord);
+				String[] nums = numRecord.split("");
+				for(int i=0;i<nums.length;i++){
+					System.out.println(nums[i]);
+					
+				}
+				
+			}
+			System.out.println(count);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

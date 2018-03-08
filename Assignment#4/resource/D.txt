@@ -1,0 +1,247 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+/**
+ * Data structure assignment#4, binary tree
+ * @author yingdong
+ */
+public class BinaryTree {
+  private static TreeNode rootNode;
+  private static int count = 0;
+  /**
+   * Insert new node into this Tree
+   * @param newNode node to be inserted into this Tree
+   */
+  public void insertNode(TreeNode node){
+    if (rootNode == null) {
+      rootNode = new TreeNode(node.getValue());
+    } else {
+      insertNode(rootNode, node);
+    }
+  }
+  /**
+   * Insert a new node into this tree
+   *
+   * @param currentNode Current node we are comparing to newNode
+   * @param newNode     New node that is to be inserted
+   */
+  private void insertNode(TreeNode node, TreeNode newNode) {
+    if (newNode.getValue() < node.getValue()) {
+      if (node.getLeftNode() == null){
+        node.setLeftNode(newNode);
+      }
+      else{
+        insertNode(node.getLeftNode(), newNode);
+      }
+    }
+    if (newNode.getValue() > node.getValue()) {
+      if (node.getRightNode() == null){
+        node.setRightNode(newNode);
+      }
+      else{
+        insertNode(node.getRightNode(), newNode);
+      }
+    }
+  }
+
+  /**
+   * free tree
+   */
+  public void freeTree(){
+	  rootNode = null;
+  }
+/**
+ * Print tree node in preorder
+ * @param node TreeNode root node
+ */
+  public void printPreorder(TreeNode node){
+	  if(node!=null){
+		  	if(node.getValue()!=-3333){
+		  		System.out.print(node.getValue());
+		  		
+		  		this.children(node);
+		  	}
+			printPreorder(node.getLeftNode());
+			printPreorder(node.getRightNode());
+		}
+	  
+  }
+  /**
+   * print tree node in inorder
+   * @param node TreeNode root node
+   */
+  public void printInorder(TreeNode node){
+	  if(node!=null){
+			printInorder(node.getLeftNode());
+			if(node.getValue()!=-3333){
+		  		System.out.print(node.getValue());
+		  		this.children(node);
+		  		
+		  	}
+			
+			printInorder(node.getRightNode());
+	  }
+  }
+  /**
+   * Print tree nodes in postorder
+   * @param node TreeNode root node
+   */
+  public void printPostorder(TreeNode node){
+	  if(node!=null){
+			printPostorder(node.getLeftNode());
+			printPostorder(node.getRightNode());
+			
+			if(node.getValue()!=-3333){
+		  		System.out.print(node.getValue());
+		  		this.children(node);
+		  	}
+			
+	  }
+  }
+ /**
+  * print numbers of children for each node
+  * @param node TreeNode root node
+  */
+  public void children(TreeNode node){
+	  if(node.getLeftNode()!=null&&node.getRightNode()!=null){
+	  		System.out.print("("+"2"+") ");
+	  	}
+	  	else if(node.getLeftNode()!=null || node.getRightNode()!=null){
+	  		System.out.print("("+"1"+") ");
+	  	}
+	  	else{
+	  		System.out.print("("+"0"+") ");
+	  	}
+  }
+  /**
+   * 
+   */
+  public int count(TreeNode node){
+	  if(node ==null){
+		  return 0;
+	  }else{
+		  int c =1;
+		  if(node.getValue()==-3333){
+		  c = 0;
+		  }
+		  c +=count(node.getLeftNode());
+		  c += count(node.getRightNode());
+		  return c;
+	  }
+  }
+  /**
+   * print tree nodes in 3 orders, and numbers of nodes
+   * @param node
+   */
+  public void print(TreeNode node){
+	  count = 0;
+	  if(node!=null){
+	  	System.out.println("\nPreorder");
+		printPreorder(rootNode);
+		System.out.println("\nInorder");
+		printInorder(rootNode);
+		System.out.println("\nPostorder");
+		printPostorder(rootNode);
+		System.out.println("\nCount:"+count(rootNode));
+	  }
+  }
+  /**
+   * delete node by setting it to -3333
+   * @param node TreeNode root node
+   * @param key int value of node
+   */
+  public void Delete(TreeNode node, int key){
+	  if(node!=null){
+		  	Delete(node.getLeftNode(), key);
+			if(node.getValue()==key){
+				node.setValue(-3333);
+			}
+			Delete(node.getRightNode(), key);
+		  
+		}
+	  
+  }
+  /**
+   * main class
+   * @param args
+   */
+  public static void main(String[] args){
+		try {
+			//read data file
+			Scanner data = new Scanner(new File("resource/Data file.txt"));
+			BinaryTree tree = null;
+			System.out.println("-3333 represent deleted numbers, only print non-deleted nodes."
+					+ "\nnumbers in () are numbers of children of the node");
+			//true if the data file doesn't reach the end
+			while(data.hasNext()){
+				//instantiate tree
+				tree = new BinaryTree();
+				Scanner record = new Scanner(data.nextLine());
+				String input = record.next();
+				
+				//true if the first charcter of input is S	
+				if(input.charAt(0)=='S'){
+					//true if input is not Set#1
+						if(!input.equals("Set#1")){
+							//print tree
+							tree.print(rootNode);
+							//free tree
+							tree.freeTree();
+							
+							System.out.println("**************************"
+									+ "***********************************");
+						}
+						//print the number of set
+						System.out.println(input);
+						while(record.hasNext()){
+							//instantiate new node with new values
+							TreeNode nNode = new TreeNode(record.nextInt());
+							//insert node
+							tree.insertNode(nNode);
+						}
+						//print tree nodes
+						tree.print(rootNode);
+						
+					}
+				//true if the first character of input is I or D
+					else if(input.charAt(0)=='I'||input.charAt(0)=='D'){
+						while(record.hasNext()){
+							//true if input is insert
+							if(input.equals("Insert")){
+								//insert new nodes
+								TreeNode node = new TreeNode(Integer.parseInt(record.next()));
+								tree.insertNode(node);
+							
+							}
+							//true if input is delete
+							else if(input.equals("Delete")){
+								//delete nodes
+								int key = Integer.parseInt(record.next());
+								tree.Delete(rootNode,key);
+							}
+							//true if record doesn't reach the end
+							if(record.hasNext()){
+								//it is either insert or delete
+								input = record.next();
+								}
+					}
+						
+					}
+				record.close();
+				}
+			//print tree nodes
+			tree.print(rootNode);
+			//free tree
+			tree.freeTree();
+			data.close();
+			
+		}
+			catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

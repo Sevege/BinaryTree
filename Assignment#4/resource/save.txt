@@ -1,0 +1,193 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class BinaryTree {
+  private static TreeNode rootNode;
+  private static int count = 0;
+  private static int children = 0;
+  /**
+   * Create new Node with value and insert into this Tree
+   *
+   * @param value Initial value for new Node
+   */
+  public void insertValue(int value) {
+    insertNode(new TreeNode(value));
+  }
+
+  /**
+   * Insert new Node into this Tree
+   *
+   * @param newNode Node to be inserted into this Tree
+   */
+  public void insertNode(TreeNode newNode){
+    if (rootNode == null) {
+      rootNode = new TreeNode(newNode.getValue());
+    } else {
+      insertNode(rootNode, newNode);
+    }
+  }
+
+  /**
+   * Search this tree for a value
+   *
+   * @param value Value to be searched in this Tree
+   * @return True if this tree contains value
+   */
+  public boolean containsValue(int value){
+    if (getNode(rootNode, value) == null) {
+      return false;
+    }
+    return true;
+  }
+
+  /** 
+   * Get Node in this Tree that contains value
+   *
+   * @param value Value to be searched within this Tree
+   * @return Node that matches value or null if no match found
+   */
+  public TreeNode getNode(TreeNode currentNode, int value){
+    if (currentNode == null)
+      return null;
+    if (currentNode.getValue() == value)
+      return currentNode;
+    if (value < currentNode.getValue())
+      return getNode(currentNode.getLeftNode(), value);
+    return getNode(currentNode.getRightNode(), value);
+  }
+
+  /**
+   * Insert a new node into this tree
+   *
+   * @param currentNode Current node we are comparing to newNode
+   * @param newNode     New node that is to be inserted
+   */
+  private void insertNode(TreeNode currentNode, TreeNode newNode) {
+    if (newNode.getValue() < currentNode.getValue()) {
+      if (currentNode.getLeftNode() == null)
+        currentNode.setLeftNode(newNode);
+      else
+        insertNode(currentNode.getLeftNode(), newNode);
+    }
+    if (newNode.getValue() > currentNode.getValue()) {
+      if (currentNode.getRightNode() == null)
+        currentNode.setRightNode(newNode);
+      else
+        insertNode(currentNode.getRightNode(), newNode);
+    }
+  }
+
+  /**
+   * @return String representation of this Tree
+   */
+  @Override
+    public String toString(){
+	  return "";
+	  
+    }
+  public void freeTree(){
+	  rootNode = null;
+  }
+
+  public void printPreorder(TreeNode node){
+	  if(node!=null){
+		  	System.out.print(node.getValue()+" ");
+		  	if(node.getValue()!=-1000){
+		  	count++;
+		  	}
+		  	if(node.getLeftNode()!=null&&node.getRightNode()!=null){
+		  		children++;
+		  	}
+			printPreorder(node.getLeftNode());
+			printPreorder(node.getRightNode());
+		}
+	  
+  }
+  public void printInorder(TreeNode node){
+	  if(node!=null){
+			printInorder(node.getLeftNode());
+			System.out.print(node.getValue()+" ");
+			printInorder(node.getRightNode());
+	  }
+  }
+  public void printPostorder(TreeNode node){
+	  if(node!=null){
+			printPostorder(node.getLeftNode());
+			printPostorder(node.getRightNode());
+			System.out.print(node.getValue()+" ");
+	  }
+  }
+  public void print(TreeNode node){
+	  count = 0;
+	  if(node!=null){
+	  	System.out.println("Preorder");
+		printPreorder(rootNode);
+		System.out.println("\nInorder");
+		printInorder(rootNode);
+		System.out.println("\nPostorder");
+		printPostorder(rootNode);
+	  }
+  }
+ 
+  public void Intrav(TreeNode node, int key){
+	  if(node!=null){
+			Intrav(node.getLeftNode(), key);
+			if(node.getValue()==key){
+				node.setValue(-1000);
+			}
+			Intrav(node.getRightNode(), key);
+		  
+		}
+	  
+  }
+  public static void main(String[] args){
+		try {
+			Scanner read = new Scanner(new File("resource/Data file.txt"));
+			while(read.hasNext()){
+				BinaryTree tree = new BinaryTree();
+				String input =read.nextLine();
+				System.out.println(input);
+				String numRecord = read.nextLine();
+				System.out.println(numRecord);
+				String[] nums = numRecord.split("\\s+");
+				for(int i=0;i<nums.length;i++){
+					TreeNode node = new TreeNode(Integer.parseInt(nums[i]));
+					tree.insertNode(node);
+				}
+				tree.print(rootNode);
+				System.out.println("\nCount:"+count);
+				Scanner record = new Scanner(read.nextLine());
+				while(record.hasNext()){
+				System.out.println(record.next());
+				}
+				while(read.hasNext()){
+					String line = read.next();
+					if(line.equals("Insert")){
+						TreeNode node = new TreeNode(Integer.parseInt(read.next()));
+						tree.insertNode(node);
+					}
+					else if(line.equals("Delete")){
+						int key = Integer.parseInt(read.next());
+						tree.Intrav(rootNode,key);
+					}
+				}
+				
+				tree.print(rootNode);
+				System.out.println("\nCount:"+count);
+				tree.freeTree();
+				
+				
+				
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
